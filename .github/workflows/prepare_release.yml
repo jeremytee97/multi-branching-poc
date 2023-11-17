@@ -1,0 +1,41 @@
+name: Prepare Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_number:
+       description: 'The release version number (i.e. 2.0.5)'
+       required: true
+
+jobs:
+  release_approval:
+    name: Create release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Bump version
+        run: sed -i "s/version=\"\([0-9]*\.[0-9]*\.[0-9]*\)\"/version=\"${{ github.event.inputs.version_number }}\"/" setup.py
+
+      # extract the content that is under the unreleased header and create a new section with the release version
+      # also add a link to the release at the bottom of the file
+      - name: Generate changelog
+        run: |
+          today=$(date +%F)
+          sed -i "/## Unreleased/s/.*/&\n\n## \[${{ github.event.inputs.version_number }}\] - $today/" CHANGELOG. 
+          sed -i '$ a\\[${{ github.event.inputs.version_number }}\]: https://github.com/MoneyLion/de-python-util/releases/tag/${{ github.event.inputs.version_number }}' CHANGELOG.md
+
+      # creates a PR with all the changes for a final review before merging
+      - name: Create Pull Request
+        run: |
+          changes=$(sed -n '/^## \[${{ github.event.inputs.version_number }}\]/,/^## /p' CHANGELOG.md | sed '$d')
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git checkout -b release/${{ github.event.inputs.version_number }}
+          git add CHANGELOG.md setup.py
+          git commit -m "Release ${{ github.event.inputs.version_number }}"
+          git push -u origin release/${{ github.event.inputs.version_number }}
+          gh pr create -B master -H release/${{ github.event.inputs.version_number }} --title 'Release ${{ github.event.inputs.version_number }}' --body "$changes" --label release --label "skip changelog"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
