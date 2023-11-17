@@ -1,4 +1,4 @@
-name: Create Pull Request For Release
+name: Merge main to Target Branch
 
 on:
   workflow_dispatch:
