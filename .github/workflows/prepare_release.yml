@@ -23,7 +23,7 @@ jobs:
       - name: Generate changelog
         run: |
           today=$(date +%F)
-          sed -i "/## Unreleased/s/.*/&\n\n## \[${{ github.event.inputs.version_number }}\] - $today/" CHANGELOG. 
+          sed -i "/## Unreleased/s/.*/&\n\n## \[${{ github.event.inputs.version_number }}\] - $today/" CHANGELOG.md
           sed -i '$ a\\[${{ github.event.inputs.version_number }}\]: https://github.com/MoneyLion/de-python-util/releases/tag/${{ github.event.inputs.version_number }}' CHANGELOG.md
 
       # creates a PR with all the changes for a final review before merging
