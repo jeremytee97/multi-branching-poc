@@ -1,4 +1,4 @@
-name: Prepare Release
+name: Generate Change Log and Bump Version
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   release_approval:
-    name: Create release
+    name: generate-change-log-bump-version
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
