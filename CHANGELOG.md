@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 <!--- changelog for features or fixes can be written here according to convention above - this will be compiled into a release section through CI/CD when publishing a release --->
 ## Unreleased
+
+## [2.2.0] - 2023-11-17
 ### Added
 - Verify final flow ([#99](https://github.com/MoneyLion/de-python-util/pull/99))
 
@@ -38,3 +40,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 [1.6.0]: https://github.com/MoneyLion/de-python-util/releases/tag/1.6.0
 [2.0.0]: https://github.com/jeremytee97/multi-branching-poc/releases/tag/2.0.0
 [2.1.0]: https://github.com/jeremytee97/multi-branching-poc/releases/tag/2.1.0
+[2.2.0]: https://github.com/jeremytee97/multi-branching-poc/releases/tag/2.2.0
