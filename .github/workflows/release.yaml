@@ -1,0 +1,37 @@
+name: Actions on PR Merge
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  tag-and-release:
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'automated-pr')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Tag Merge Commit
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git tag -a "v${{ github.run_number }}" -m "Tagging release v${{ github.run_number }}"
+          git push origin --tags
+
+      # extract the content between the second and third H2 headers
+      - name: Extract release notes
+        id: extract-release-notes
+        uses: ffurrer2/extract-release-notes@v1
+
+      # creates an official release with the tagged version and release notes from above step
+      - name: Create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          body: ${{ steps.extract-release-notes.outputs.release_notes }}

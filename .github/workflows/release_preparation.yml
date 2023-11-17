@@ -1,0 +1,33 @@
+name: Create Pull Request For Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch_name:
+        description: 'Enter the target branch name'
+        required: true
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Verify if branch exists
+        run: |
+          if ! git ls-remote --heads origin ${{ github.event.inputs.branch_name }} | grep -q refs/heads/${{ github.event.inputs.branch_name }}; then
+            echo "Branch does not exist: ${{ github.event.inputs.branch_name }}"
+            exit 1
+          fi
+
+      - name: Create Pull Request with Label
+        run: |
+          gh pr create \
+            --base ${{ github.event.inputs.branch_name }} \
+            --head main \
+            --title "Automated Merge main into ${{ github.event.inputs.branch_name }}" \
+            --body "Automated PR to merge main into ${{ github.event.inputs.branch_name }}" \
+            --label automated-pr
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
