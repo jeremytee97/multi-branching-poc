@@ -10,7 +10,7 @@ setup(
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     # package setup
-    version="2.4.0",
+    version="2.5.0",
     # requirements
     python_requires=">=3.11",
     classifiers=[
